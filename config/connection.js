@@ -14,7 +14,18 @@ var user = {
     creationDate: Date.now(),
     status: 'Active'
 };
-
+// Tenant Schema
+var tenantSchema = function(Schema) {
+    return new Schema({
+        name: String,
+        category: String,
+        domain: String,
+        creationDate: String,
+        createdBy: String,
+        status: String
+    }, { collection: 'tenant' });
+};
 module.exports = {
-    userSchema: userSchema
+    userSchema: userSchema,
+    tenantSchema: tenantSchema
 };

@@ -1,4 +1,5 @@
 var express = require('express');
+var cors = require("cors");
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -11,7 +12,7 @@ var hbs = require('express-handlebars');
 var index = require('./routes/index');
 
 var app = express();
-
+app.use(cors());
 // view engine setup
 app.engine('hbs', hbs({
     extname: 'hbs',
@@ -38,6 +39,14 @@ app.use(function(req, res, next) {
     err.status = 404;
     next(err);
 });
+
+//Allow CORS
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 
 // error handler
 app.use(function(err, req, res, next) {
