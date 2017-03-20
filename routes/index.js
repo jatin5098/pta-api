@@ -43,9 +43,17 @@ router.post('/tenant/add', function(req, res, next) {
         createdBy: 'User',
         status: 'Active'
     };
-    var tenant = new userModel(tenant);
+    var tenant = new tenantModel(tenant);
     tenant.save();
     console.log(req.body);
     res.end(JSON.stringify(req.body.name));
+});
+
+// Get all tenant list
+router.get('/tenant/all', function(req, res, next) {
+    var data = tenantModel.find({});
+    data.then(function(record) {
+        res.end(JSON.stringify(record));
+    });
 });
 module.exports = router;
