@@ -7,12 +7,45 @@ mongoose.connect('localhost:27017/pta');
 var Schema = mongoose.Schema;
 var Connection = require('../config/connection');
 
+// Web Token
+var jwt = require('jsonwebtoken');
+process.env.SECRET_KEY = "mysecretkey";
+
 // Import schemas
 var userSchema = Connection.userSchema(Schema);
 var userModel = mongoose.model('user', userSchema);
 
 var tenantSchema = Connection.tenantSchema(Schema);
 var tenantModel = mongoose.model('tenant', tenantSchema);
+
+// Import Controllers
+var authenticationController = require('../controller/authentication-controller');
+
+// Routing starts from here
+// Authentication
+// Validate Token 
+router.use(function(req, res, next) {
+    var token = req.body.token || req.headers['token'];
+    if (token) {
+        console.log('Token Created');
+    } else {
+        console.log('Please send a token');
+    }
+    next();
+});
+// router.post('/auth/user', authenticationController.authenticate);
+router.post('/auth/user', function(req, res, next) {
+    var user = req.body;
+    var token = jwt.sign(user, process.env.SECRET_KEY, {
+        expiresIn: 4000
+    });
+    var record = {
+        userName: user.userName, 
+        token: token
+    };
+    res.end(JSON.stringify(record));
+});
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
