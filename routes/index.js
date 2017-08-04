@@ -27,6 +27,13 @@ var authenticationController = require('../controller/authentication-controller'
 router.use(function(req, res, next) {
     var token = req.body.token || req.headers['token'];
     if (token) {
+        jwt.verify(token, process.env.SECRET_KEY, function(err, decode) {
+            if(err) {
+                res.status(500).end("Invalid Token");
+            } else {
+                // next();
+            }
+        });
         console.log('Token Created');
     } else {
         console.log('Please send a token');
@@ -35,6 +42,7 @@ router.use(function(req, res, next) {
 });
 // router.post('/auth/user', authenticationController.authenticate);
 router.post('/auth/user', function(req, res, next) {
+    // TODO: Validate login from the DB
     var user = req.body;
     var token = jwt.sign(user, process.env.SECRET_KEY, {
         expiresIn: 4000
