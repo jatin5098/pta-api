@@ -26,19 +26,27 @@ var authenticationController = require('../controller/authentication-controller'
 // Validate Token 
 router.use(function(req, res, next) {
     var token = req.body.token || req.headers['token'];
+    console.log(token);
     if (token) {
         jwt.verify(token, process.env.SECRET_KEY, function(err, decode) {
             if(err) {
-                res.status(500).end("Invalid Token");
+                var record = {
+                    success: false,
+                    msg: 'Invalid token',
+                    token: token
+                };
+                res.end(JSON.stringify(record));
             } else {
-                // next();
+                next();
             }
-        });
-        console.log('Token Created');
+        });        
     } else {
-        console.log('Please send a token');
+        var record = {
+            success: false,
+            msg: 'Please send a token',
+            token: token
+        };
     }
-    next();
 });
 // router.post('/auth/user', authenticationController.authenticate);
 router.post('/auth/user', function(req, res, next) {
@@ -48,12 +56,26 @@ router.post('/auth/user', function(req, res, next) {
         expiresIn: 4000
     });
     var record = {
+        success: true,
         userName: user.userName, 
         token: token
     };
     res.end(JSON.stringify(record));
 });
 
+router.post('/auth/token', function(req, res, next) {
+    var token = req.body.token || req.headers['token'];
+    jwt.verify(token, process.env.SECRET_KEY, function(err, decode) {
+        if(!err) {
+            var record = {
+                success: true,
+                userName: decode.userName,
+                token: token
+            };
+            res.end(JSON.stringify(record));
+        }
+    }); 
+});
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
