@@ -46,6 +46,8 @@ router.use(function(req, res, next) {
             msg: 'Please send a token',
             token: token
         };
+        // res.end(JSON.stringify(record));
+        next();
     }
 });
 // router.post('/auth/user', authenticationController.authenticate);
