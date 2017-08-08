@@ -41,13 +41,16 @@ router.use(function(req, res, next) {
             }
         });        
     } else {
+        if(req.body.userName && req.body.password) {
+            next();
+        }
         var record = {
             success: false,
             msg: 'Please send a token',
             token: token
         };
-        // res.end(JSON.stringify(record));
-        next();
+        res.end(JSON.stringify(record));
+        
     }
 });
 // router.post('/auth/user', authenticationController.authenticate);
